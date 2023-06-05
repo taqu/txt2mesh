@@ -47,13 +47,21 @@ print(min(len(prompts), train_count))
 max_train_count = max(len(prompts), train_count)
 
 conf_file = os.path.join(os.getcwd(), 'threestudio/configs/prolificdreamer.yaml')
+#conf_file = os.path.join(os.getcwd(), 'threestudio/configs/dreamfusion-sd.yaml')
 print(conf_file)
 os.chdir('./threestudio')
 torch.set_float32_matmul_precision('medium')
 #base_config = ['launch.py','--config', 'configs/prolificdreamer-refine.yaml', '--train', '--gpu', '0', 'data.width=512', 'data.height=512']
-base_config = ['python3', 'launch.py','--config', conf_file, '--train', '--gpu', '0', 'name=\"sheep\"','tag=\"sheep\"','data.width=1', 'data.height=1']
-#extra_condig = ['trainer.max_steps=10000', 'system.guidance.token_merging=true', 'system.guidance.enable_attention_slicing=true']
-extra_condig = ['trainer.max_steps=1', 'trainer.max_epochs=1', 'trainer.fast_dev_run=True', 'data.batch_size=1', 'system.guidance.token_merging=true', 'system.guidance.enable_attention_slicing=true']
+base_config = ['python3', 'launch.py','--config', conf_file, '--train', '--gpu', '0', 'name=\"sheep\"','tag=\"sheep\"','data.width=64', 'data.height=64']
+#extra_config = ['trainer.max_steps=10000', 'system.guidance.token_merging=true', 'system.guidance.enable_attention_slicing=true']
+extra_config = ['trainer.max_steps=1', 'trainer.max_epochs=1', 'trainer.fast_dev_run=True', 'data.batch_size=1'
+                , 'trainer.strategy=\"deepspeed_stage_2\"'
+                , 'trainer.devices=1'
+                , 'trainer.precision=\"16-mixed\"'
+                , 'system.optimizer.name=\"DeepSpeedCPUAdam\"'
+                #, 'system.guidance.token_merging=true'
+                , 'system.guidance.enable_attention_slicing=true']
+base_config = base_config + extra_config
 for i in range(0,1):
     config = base_config + ['system.prompt_processor.prompt=' + prompts[i]]
     print(config)
