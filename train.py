@@ -55,12 +55,13 @@ torch.set_float32_matmul_precision('medium')
 base_config = ['python3', 'launch.py','--config', conf_file, '--train', '--gpu', '0', 'name=\"sheep\"','tag=\"sheep\"','data.width=64', 'data.height=64']
 #extra_config = ['trainer.max_steps=10000', 'system.guidance.token_merging=true', 'system.guidance.enable_attention_slicing=true']
 extra_config = ['trainer.max_steps=1', 'trainer.max_epochs=1', 'trainer.fast_dev_run=True', 'data.batch_size=1'
-                , 'trainer.strategy=\"deepspeed_stage_2\"'
+                #, 'trainer.strategy=\"deepspeed_stage_2\"'
                 , 'trainer.devices=1'
                 , 'trainer.precision=\"16-mixed\"'
-                , 'system.optimizer.name=\"DeepSpeedCPUAdam\"'
+                #, 'system.optimizer.name=\"DeepSpeedCPUAdam\"'
                 #, 'system.guidance.token_merging=true'
-                , 'system.guidance.enable_attention_slicing=true']
+                , 'system.guidance.enable_attention_slicing=true'
+                , 'system.guidance.use_deepspeed=true']
 base_config = base_config + extra_config
 for i in range(0,1):
     config = base_config + ['system.prompt_processor.prompt=' + prompts[i]]
