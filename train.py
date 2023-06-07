@@ -51,17 +51,34 @@ conf_file = os.path.join(os.getcwd(), 'threestudio/configs/prolificdreamer.yaml'
 print(conf_file)
 os.chdir('./threestudio')
 torch.set_float32_matmul_precision('medium')
+#SG161222/Realistic_Vision_V2.0
 #base_config = ['launch.py','--config', 'configs/prolificdreamer-refine.yaml', '--train', '--gpu', '0', 'data.width=512', 'data.height=512']
-base_config = ['python3', 'launch.py','--config', conf_file, '--train', '--gpu', '0', 'name=\"sheep\"','tag=\"sheep\"','data.width=64', 'data.height=64']
-#extra_config = ['trainer.max_steps=10000', 'system.guidance.token_merging=true', 'system.guidance.enable_attention_slicing=true']
-extra_config = ['trainer.max_steps=1', 'trainer.max_epochs=1', 'trainer.fast_dev_run=True', 'data.batch_size=1'
-                #, 'trainer.strategy=\"deepspeed_stage_2\"'
+base_config = ['python3', 'launch.py','--config', conf_file, '--train', '--gpu', '0', 'name=\"sheep\"','tag=\"sheep\"','data.width=128', 'data.height=128']
+extra_config = [
+    'trainer.max_steps=10000'
+    ,'data.batch_size=1'
+    #,'trainer.fast_dev_run=True'
+    ,'trainer.strategy=\"deepspeed_stage_2_offload\"'
+    ,'trainer.devices=1'
+    ,'trainer.precision=\"32\"'
+    ,'system.guidance.pretrained_model_name_or_path=\"stabilityai/stable-diffusion-2-1-base\"'
+    ,'system.guidance.pretrained_model_name_or_path_lora=\"stabilityai/stable-diffusion-2-1-base\"'
+    ,'system.optimizer.name=\"DeepSpeedCPUAdam\"'
+    ,'system.guidance.use_deepspeed=true'
+    #'system.guidance.token_merging=true',
+    ,'system.guidance.enable_attention_slicing=true']
+'''
+extra_config = ['trainer.fast_dev_run=True', 'data.batch_size=1'
+                , 'trainer.strategy=\"deepspeed_stage_2_offload\"'
                 , 'trainer.devices=1'
-                , 'trainer.precision=\"16-mixed\"'
-                #, 'system.optimizer.name=\"DeepSpeedCPUAdam\"'
+                , 'trainer.precision=\"32\"'
+                , 'system.optimizer.name=\"DeepSpeedCPUAdam\"'
                 #, 'system.guidance.token_merging=true'
                 , 'system.guidance.enable_attention_slicing=true'
-                , 'system.guidance.use_deepspeed=true']
+                , 'system.guidance.use_deepspeed=true'
+                ]
+'''
+
 base_config = base_config + extra_config
 for i in range(0,1):
     config = base_config + ['system.prompt_processor.prompt=' + prompts[i]]
