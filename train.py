@@ -29,11 +29,19 @@ def save_count(filename, count):
         return
 
 prompts = []
-dataset = datasets.load_dataset("FredZhang7/stable-diffusion-prompts-2.47M")
-prompts = prompts + dataset['train']['text']
+with open('Data/Classes/imagenet_classes.txt',encoding='utf-8') as file:
+    list = file.readlines()
+    for i in range(0,len(list)):
+        list[i] = list[i].split()
+        list[i] = ' '.join(list[i])
+    print(list)
+    prompts = list
 
-dataset = datasets.load_dataset('Gustavosta/Stable-Diffusion-Prompts')
-prompts = prompts + dataset['train']['Prompt']
+#dataset = datasets.load_dataset("FredZhang7/stable-diffusion-prompts-2.47M")
+#prompts = prompts + dataset['train']['text']
+
+#dataset = datasets.load_dataset('Gustavosta/Stable-Diffusion-Prompts')
+#prompts = prompts + dataset['train']['Prompt']
 
 #dataset = datasets.load_dataset("FredZhang7/anime-prompts-180K")
 #prompts = prompts + dataset['train']['safebooru_clean']
